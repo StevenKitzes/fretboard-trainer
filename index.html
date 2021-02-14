@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+      }
+      br {
+        margin: 0 0 0.5em;
+      }
+      input {
+        text-align: center;
+      }
+      li {
+        margin-bottom: 0.5em;
+      }
+
+      #metronome {
+        background-color: aliceblue;
+        box-shadow: 0 0.25em 1em 0 black;
+        height: 8.75em;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+      #title {
+        margin-top: 10em;
+      }
+      #ex1-input {
+        width: 3em;
+      }
+
+      .control-box {
+        border: 1px solid black;
+        border-radius: 1em;
+        display: inline-block;
+        font-size: .8em;
+        margin: 0.5em 1em;
+        padding: 0.25em 1em;
+      }
+      .string-div {
+        display: block;
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='title'>
+      <h4 id='title-1'>Welcome to the</h4>
+      <h1 id='title-2'>Guitar Fretboard Trainer</h1>
+      <h5 id='inspired-by'>Inspired by (and intended for use in conjunction with) Tommaso's <a href="musictheoryforguitar.com">MusicTheoryForGuitar</a> <a href="https://www.youtube.com/user/MusicTheoryForGuitar">YouTube channel</a>, specifically its <a href="https://www.youtube.com/watch?v=PJddQ6Q0UDo">guitar fretboard memorization exercise</a>!!  Thanks Tommaso!!</h5>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/PJddQ6Q0UDo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div id='metronome'>
+      <hr>
+      <h2>Metronome (BPM)</h2>
+      <button id="metronome-slower">Slower</button>
+      <input id="metronome-bpm" value=40>
+      <button id="metronome-faster">Faster</button>
+      <br>
+      <button id="metronome-button">Start or stop</button>
+      <audio id="metronome-audio" autoplay="false" loop="false">
+        <source src="tick.mp3" type="audio/mpeg">
+      </audio>
+      <hr>
+    </div>
+
+    <hr>
+    <h2>The following tools will help you practice the exercises in the video!</h2>
+
+    <h4>Exercises:</h4>
+
+    <ol>
+    <li>
+      Practice, starting with the natural notes!
+    </li>
+    <li>
+      Repeat exercise 1, but use the metronome, starting at 40 BPM!
+    </li>
+    <li>
+      Add sharp and flat notes!
+    </li>
+    <li>
+      Get two random notes, play one up and one down!
+      <br>
+      <button id="ex4-get-two-random">Get 2 random notes</button>
+    </li>
+    <li>
+      Play all 7 natural notes in a random order, alternating playing each note up and down!
+      <br>
+      <button id="ex5-get-seven-random">Get 7 random notes</button> <span id='ex5-notes'></span>
+    </li>
+    <li>
+      Repeat exercises 2 through 5, gradually increasing metronome speed until you can play at 80 BPM!
+    </li>
+
+    <hr>
+    Enter a note: <input id='ex1-input'>
+    <button id="ex1-go">Go</button>
+    Reverse? <input id='ex1-reverse' type="checkbox">
+    <br>
+    <div class='control-box'>
+      Random note selection configuration:
+      <button id="ex1-random">Random note</button>
+      <br>
+      Include natural notes: <input id="ex1-natural" type="checkbox">
+      | Include sharps: <input id="ex1-sharp" type="checkbox">
+      | Include flats: <input id="ex1-flat" type="checkbox">
+      | Randomize reversal: <input id="ex1-reverse-randomly" type="checkbox">
+    </div>
+    <br>
+    <div id="ex1-string6" class="string-div">------------------------------</div>
+    <div id="ex1-string5" class="string-div">------------------------------</div>
+    <div id="ex1-string4" class="string-div">------------------------------</div>
+    <div id="ex1-string3" class="string-div">------------------------------</div>
+    <div id="ex1-string2" class="string-div">------------------------------</div>
+    <div id="ex1-string1" class="string-div">------------------------------</div>
+
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
