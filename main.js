@@ -50,6 +50,7 @@ const ex4Accidentals = getEl('ex4-accidentals');
 const ex5GetSevenRandom = getEl('ex5-get-seven-random');
 
 ex1Natural.checked = true;
+stopMetronome();
 
 function randInt (maxExclusive) {
   return Math.floor(Math.random() * maxExclusive);
@@ -85,6 +86,8 @@ function startMetronome () {
 function stopMetronome () {
   clearInterval(metronomeInterval);
   metronomeInterval = null;
+  metronomeAudio.loop = false;
+  metronomeAudio.pause();
 }
 
 function handleMetronomeStartStop () {
