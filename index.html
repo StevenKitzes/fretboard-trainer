@@ -63,7 +63,7 @@
       <button id="metronome-faster">Faster</button>
       <br>
       <button id="metronome-button">Start or stop</button>
-      <audio id="metronome-audio" autoplay="false" loop="false">
+      <audio id="metronome-audio" autoplay="0" autostart="0" loop="0">
         <source src="tick.mp3" type="audio/mpeg">
       </audio>
       <hr>
@@ -88,6 +88,7 @@
       Get two random notes, play one up and one down!
       <br>
       <button id="ex4-get-two-random">Get 2 random notes</button>
+      With accidentals (sharps and flats)? <input type="checkbox" id="ex4-accidentals">
     </li>
     <li>
       Play all 7 natural notes in a random order, alternating playing each note up and down!

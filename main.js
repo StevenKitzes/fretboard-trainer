@@ -45,6 +45,7 @@ const ex1Sharp = getEl('ex1-sharp');
 const ex1Flat = getEl('ex1-flat');
 
 const ex4GetTwoRandom = getEl('ex4-get-two-random');
+const ex4Accidentals = getEl('ex4-accidentals');
 
 const ex5GetSevenRandom = getEl('ex5-get-seven-random');
 
@@ -116,11 +117,11 @@ function flatTheNote (note) {
   })
 }
 
-function getRandomNote (ex4Override = false) {
+function getRandomNote (nats = true, sharps = false, flats = false) {
   const options = [];
-  if (ex1Natural.checked || ex4Override) options.push(...naturalNotes);
-  if (ex1Sharp.checked && !ex4Override) options.push(...sharpNotes);
-  if (ex1Flat.checked && !ex4Override) options.push(...flatNotes);
+  if (nats) options.push(...naturalNotes);
+  if (sharps) options.push(...sharpNotes);
+  if (flats) options.push(...flatNotes);
 
   return options[randInt(options.length)];
 }
@@ -176,8 +177,8 @@ metronomeBpm.addEventListener('change', () => {
 });
 
 ex1Random.addEventListener('click', () => {
-  let note = getRandomNote();
-  while (ex1Input.value == note) note = getRandomNote();
+  let note = getRandomNote(ex1Natural.checked, ex1Sharp.checked, ex1Flat.checked);
+  while (ex1Input.value == note) note = getRandomNote(ex1Natural.checked, ex1Sharp.checked, ex1Flat.checked);
   ex1Input.value = note;
 
   let strings = getStringsByNote(note, getEl('ex1-reverse-randomly').checked ? randInt(2) : getEl('ex1-reverse').checked);
@@ -215,8 +216,8 @@ ex1Go.addEventListener('click', () => {
 });
 
 ex4GetTwoRandom.addEventListener('click', () => {
-  let note1 = getRandomNote(true);
-  let note2 = getRandomNote(true);
+  let note1 = ex4Accidentals.checked ? getRandomNote(true, true, true) : getRandomNote(true);
+  let note2 = ex4Accidentals.checked ? getRandomNote(true, true, true) : getRandomNote(true);
   ex1Input.value = `${note1} ${note2}`;
 
   let strings1 = getStringsByNote(note1, false);
