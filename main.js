@@ -31,7 +31,6 @@ frets['Gb'] = flatTheNote('G');
 
 let metronomeInterval = null;
 
-const metronomeAudio = getEl('metronome-audio');
 const metronomeBpm = getEl('metronome-bpm');
 const metronomeButton = getEl('metronome-button');
 const metronomeSlower = getEl('metronome-slower');
@@ -79,15 +78,17 @@ function startMetronome () {
   const interval = parseInt(metronomeBpm.value);
 
   metronomeInterval = setInterval(() => {
-    metronomeAudio.loop = false;
-    metronomeAudio.play();
+    let audio = new Audio('tick.mp3');
+    audio.loop = false;
+    audio.play();
+    audio.onended = () => {
+      audio.remove();
+    }
   }, bpmToInterval(interval));  
 }  
 function stopMetronome () {
   clearInterval(metronomeInterval);
   metronomeInterval = null;
-  metronomeAudio.loop = false;
-  metronomeAudio.pause();
 }
 
 function handleMetronomeStartStop () {
