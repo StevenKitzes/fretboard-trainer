@@ -59,7 +59,7 @@ ex1Natural.checked = true;
 stopMetronome();
 
 if (deviceIsIos()) {
-  getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
+  getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3 style="color: #444444">Normally, a metronome tool would appear here.  Due to technical limitations, this feature is only available on desktop/laptop.  But a metronome is highly recommended for these exercises, and can be found on other mobile apps and websites!!</h3>';
 }
 
 function randInt (maxExclusive) {
