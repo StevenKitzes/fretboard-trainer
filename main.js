@@ -54,6 +54,10 @@ let target = Date.now();
 ex1Natural.checked = true;
 stopMetronome();
 
+if (deviceIsIos()) {
+  getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
+}
+
 function randInt (maxExclusive) {
   return Math.floor(Math.random() * maxExclusive);
 }
@@ -72,7 +76,7 @@ function bpmToInterval (bpm) {
 function enforceMetronomeRules () {
   let value = parseInt(metronomeBpm.value);
   if (isNaN(value)) value = 60;
-  if (value < 10) value = 10;
+  if (value < 30) value = 30;
   if (value > 350) value = 350;
   metronomeBpm.value = value;
   interval = bpmToInterval(value);
@@ -172,10 +176,7 @@ metronomeFaster.addEventListener('click', () => {
   handleMetronomeUpdate();
 });
 
-metronomeBpm.addEventListener('change', () => {
-  handleMetronomeUpdate();
-});
-metronomeBpm.addEventListener('keyup', () => {
+metronomeBpm.addEventListener('blur', () => {
   handleMetronomeUpdate();
 });
 
@@ -259,3 +260,17 @@ setInterval(() => {
     }
   }
 }, 10);
+
+// Helper stolen direct from StackOverflow (thank you https://stackoverflow.com/questions/9038625/detect-if-device-is-ios)
+function deviceIsIos() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  // iPad on iOS 13 detection
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
