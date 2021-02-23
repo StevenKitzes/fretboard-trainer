@@ -6,10 +6,8 @@ button.innerText = 'Play bojack!'
 
 button.addEventListener('click', function () {
   if (audio.paused) {
-    setTimeout(() => {
-      audio.play()
-      button.innerText = 'Pause'
-    }, 3000)
+    audio.play()
+    button.innerText = 'Pause'
   } else {
     audio.pause()
     button.innerText = 'Play!'
