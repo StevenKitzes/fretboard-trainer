@@ -2,7 +2,7 @@ var audio = document.createElement('audio')
 audio.src = 'bojack.mp3'
 
 var button = document.createElement('button')
-button.innerText = 'Play bojack with delay!'
+button.innerText = 'Play bojack!'
 
 button.addEventListener('click', function () {
   if (audio.paused) {
