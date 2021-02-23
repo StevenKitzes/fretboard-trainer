@@ -53,12 +53,12 @@ let target = Date.now();
 let metronomeActivated = false;
 let audioElement = null;
 
-const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
 
 ex1Natural.checked = true;
 stopMetronome();
 
-getEl('debug').innerHTML = `viewport width: ${viewportWidth}`;
+getEl('debug').innerHTML = `am i on mobile? ${isMobile ? 'yes' : 'no'}`;
 // if (deviceIsIos()) {
 //   getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
 // }
