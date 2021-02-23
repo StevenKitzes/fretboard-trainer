@@ -29,8 +29,6 @@ frets['Eb'] = flatTheNote('E');
 frets['Fb'] = flatTheNote('F');
 frets['Gb'] = flatTheNote('G');
 
-let metronomeInterval = null;
-
 const metronomeAudio = getEl('metronome-audio');
 const metronomeBpm = getEl('metronome-bpm');
 const metronomeButton = getEl('metronome-button');
@@ -48,6 +46,10 @@ const ex4GetTwoRandom = getEl('ex4-get-two-random');
 const ex4Accidentals = getEl('ex4-accidentals');
 
 const ex5GetSevenRandom = getEl('ex5-get-seven-random');
+
+let metronomeOn = false;
+let interval = bpmToInterval(40);
+let target = Date.now();
 
 ex1Natural.checked = true;
 stopMetronome();
@@ -73,26 +75,21 @@ function enforceMetronomeRules () {
   if (value < 10) value = 10;
   if (value > 350) value = 350;
   metronomeBpm.value = value;
-}  
+  interval = bpmToInterval(value);
+}
 
 function startMetronome () {
-  const interval = parseInt(metronomeBpm.value);
-
-  metronomeInterval = setInterval(() => {
-    metronomeAudio.loop = false;
-    metronomeAudio.play();
-  }, bpmToInterval(interval));  
-}  
-function stopMetronome () {
-  clearInterval(metronomeInterval);
-  metronomeInterval = null;
   metronomeAudio.loop = false;
-  metronomeAudio.pause();
+  metronomeAudio.play();
+  target = Date.now() + interval;
+  metronomeOn = true;
+}
+function stopMetronome () {
+  metronomeOn = false;
 }
 
 function handleMetronomeStartStop () {
-  if (metronomeInterval) {
-    console.log(`metronomeInterval: ${metronomeInterval}`);
+  if (metronomeOn) {
     return stopMetronome();
   }
 
@@ -101,7 +98,7 @@ function handleMetronomeStartStop () {
 
 function handleMetronomeUpdate () {
   enforceMetronomeRules();
-  if (metronomeInterval) {
+  if (metronomeOn) {
     stopMetronome();
     startMetronome();
   }
@@ -178,6 +175,9 @@ metronomeFaster.addEventListener('click', () => {
 metronomeBpm.addEventListener('change', () => {
   handleMetronomeUpdate();
 });
+metronomeBpm.addEventListener('keyup', () => {
+  handleMetronomeUpdate();
+});
 
 ex1Random.addEventListener('click', () => {
   let note = getRandomNote(ex1Natural.checked, ex1Sharp.checked, ex1Flat.checked);
@@ -247,3 +247,15 @@ ex5GetSevenRandom.addEventListener('click', () => {
   }
   getEl('ex5-notes').innerHTML = randomed.join(' - ');
 });
+
+setInterval(() => {
+  if (metronomeOn) {
+    const now = Date.now();
+    if (now >= target) {
+      metronomeAudio.loop = false;
+      metronomeAudio.currentTime = 0;
+      metronomeAudio.play();
+      target = now + interval;
+    }
+  }
+}, 10);
