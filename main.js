@@ -53,9 +53,12 @@ let target = Date.now();
 let metronomeActivated = false;
 let audioElement = null;
 
+const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+
 ex1Natural.checked = true;
 stopMetronome();
 
+getEl('debug').innerHTML = `viewport width: ${viewportWidth}`;
 // if (deviceIsIos()) {
 //   getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
 // }
@@ -260,7 +263,6 @@ setInterval(() => {
   if (metronomeOn) {
     const now = Date.now();
     if (now >= target) {
-      getEl('debug').innerHTML = `at interval:\nnow ${now/1000}\ninterval ${interval/1000}\ntarget ${target/1000}\ndiff btw now and target ${now - target}`;
       audioElement.loop = false;
       audioElement.currentTime = 0;
       audioElement.play();
