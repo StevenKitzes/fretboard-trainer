@@ -29,7 +29,6 @@ frets['Eb'] = flatTheNote('E');
 frets['Fb'] = flatTheNote('F');
 frets['Gb'] = flatTheNote('G');
 
-const metronomeAudio = getEl('metronome-audio');
 const metronomeBpm = getEl('metronome-bpm');
 const metronomeButton = getEl('metronome-button');
 const metronomeSlower = getEl('metronome-slower');
@@ -51,12 +50,15 @@ let metronomeOn = false;
 let interval = bpmToInterval(40);
 let target = Date.now();
 
+let metronomeActivated = false;
+let audioElement = null;
+
 ex1Natural.checked = true;
 stopMetronome();
 
-if (deviceIsIos()) {
-  getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
-}
+// if (deviceIsIos()) {
+//   getEl('metronome').innerHTML = '<h3 style="color: #444444">You appear to be using an iOS device.</h3><h3>Normally, a metronome tool would appear here.</h3><h3>iOS unfortunately blocks this feature.</h3>';
+// }
 
 function randInt (maxExclusive) {
   return Math.floor(Math.random() * maxExclusive);
@@ -83,8 +85,8 @@ function enforceMetronomeRules () {
 }
 
 function startMetronome () {
-  metronomeAudio.loop = false;
-  metronomeAudio.play();
+  audioElement.loop = false;
+  audioElement.play();
   target = Date.now() + interval;
   metronomeOn = true;
 }
@@ -93,6 +95,11 @@ function stopMetronome () {
 }
 
 function handleMetronomeStartStop () {
+  if (!metronomeActivated) {
+    metronomeActivated = true;
+    audioElement = new Audio('tick.mp3');
+  }
+
   if (metronomeOn) {
     return stopMetronome();
   }
@@ -253,9 +260,9 @@ setInterval(() => {
   if (metronomeOn) {
     const now = Date.now();
     if (now >= target) {
-      metronomeAudio.loop = false;
-      metronomeAudio.currentTime = 0;
-      metronomeAudio.play();
+      audioElement.loop = false;
+      audioElement.currentTime = 0;
+      audioElement.play();
       target = now + interval;
     }
   }
