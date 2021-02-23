@@ -260,6 +260,7 @@ setInterval(() => {
   if (metronomeOn) {
     const now = Date.now();
     if (now >= target) {
+      getEl('debug').innerHTML = `at interval:\nnow ${now/1000}\ninterval ${interval/1000}\ntarget ${target/1000}\ndiff btw now and target ${now - target}`;
       audioElement.loop = false;
       audioElement.currentTime = 0;
       audioElement.play();
