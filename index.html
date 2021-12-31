@@ -40,6 +40,14 @@
         padding: 8px;
       }
 
+      #flash-card-button {
+        margin: 4px 0 8px;
+      }
+
+      #flash-card-duration {
+        width: 4em;
+      }
+
       #flash-card-hint {
         color: darkblue;
         font-size: 32px;
@@ -174,9 +182,14 @@
       <div><input id="name-note" class="radio" name="flash-cards" type="radio"><label for="name-note">Name note from fret and string</label></div>
       <div><input id="find-or-name" class="radio" name="flash-cards" type="radio"><label for="find-or-name">Randomly find or name</label></div>
     </div>
+    <button id="flash-card-button">Turn vocalization on</button>
+    <div id="flash-card-duration-controls">
+      <label for="flash-card-duration">Flash card duration (seconds):&nbsp;</label>
+      <input id="flash-card-duration" type="text" autocomplete="off" value='5' />
+    </div>
     <div id="flash-card">
       <span id="flash-card-instructions">Follow instructions here</span>
-      <span id="flash-card-hint">4th string A#</span>
+      <span id="flash-card-hint">Ready?</span>
     </div>
 
     <hr>

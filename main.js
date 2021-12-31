@@ -50,9 +50,11 @@ const ex5GetSevenRandom = getEl('ex5-get-seven-random');
 const radioFind = getEl('find-note');
 const radioName = getEl('name-note');
 const radioRandom = getEl('find-or-name');
+const flashCardButton = getEl('flash-card-button');
 const flashCardInstructions = getEl('flash-card-instructions');
 const flashCardHint = getEl('flash-card-hint');
 const flashCardAudio = getEl('flash-card-audio');
+const flashCardDurationInput = getEl('flash-card-duration');
 
 radioFind.checked = true;
 
@@ -62,6 +64,10 @@ let target = Date.now();
 
 let metronomeActivated = false;
 let metronomeAudioElement = null;
+
+let vocalizeFlashCards = false;
+let flashCardDuration = 5000;
+let flashCardInterval = null;
 
 const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
 
@@ -281,47 +287,108 @@ setInterval(() => {
 }, 10);
 
 // do a flash card
-setInterval(() => {
-  if (radioFind.checked) {
-    flashCardFind();
-  } else if (radioName.checked) {
-    flashCardName();
-  } else {
-    if (Math.random() > 0.5) {
-      flashCardFind();
-    } else {
-      flashCardName();
-    }
+function startFlashCardInterval() {
+  if (flashCardInterval !== null) {
+    clearInterval(flashCardInterval);
+    flashCardInterval = null;
   }
-}, 5000)
+  flashCardInterval = setInterval(() => {
+    if (radioFind.checked) {
+      flashCardFind();
+    } else if (radioName.checked) {
+      flashCardName();
+    } else {
+      if (Math.random() > 0.5) {
+        flashCardFind();
+      } else {
+        flashCardName();
+      }
+    }
+  }, flashCardDuration)
+}
+startFlashCardInterval();
+
+flashCardButton.addEventListener('click', () => {
+  if (vocalizeFlashCards) {
+    flashCardButton.innerHTML = 'Turn vocalization on';
+  } else {
+    flashCardButton.innerHTML = 'Turn vocalization off';
+  }
+  vocalizeFlashCards = !vocalizeFlashCards;
+});
+
+flashCardDurationInput.addEventListener('keyup', (event) => {
+  const newValue = Number(event.target.value);
+  if (newValue === 0 || newValue === NaN) {
+    flashCardDuration = 5000;
+  } else {
+    flashCardDuration = newValue * 1000;
+  }
+  startFlashCardInterval();
+});
 
 function flashCardFind() {
-  flashCardInstructions.innerHTML = 'Find this note on this string:'
-  flashCardHint.innerHTML = `${getString()} string ${getNote()}`
+  const whichString = Math.floor(Math.random() * 6) + 1;
+  const whichNote = Math.floor(Math.random() * allNotes.length);
+  const noteString = getNote(whichNote);
+
+  const queue = [];
+  queue.push('flash-card-audio/on-the.mp3');
+  queue.push(`flash-card-audio/${whichString}.mp3`);
+  queue.push('flash-card-audio/string.mp3');
+  queue.push('flash-card-audio/find.mp3');
+  queue.push(`flash-card-audio/${noteString.charAt(0).toLowerCase()}.mp3`);
+  if (noteString.length > 1) {
+    queue.push(noteString.charAt(1) === '#' ? 'flash-card-audio/sharp.mp3' : 'flash-card-audio/flat.mp3');
+  }
+
+  audioQueue(flashCardAudio, queue);
+  
+  flashCardInstructions.innerHTML = 'Find this note on this string:';
+  flashCardHint.innerHTML = `${getString(whichString)} string ${noteString}`;
 }
 function flashCardName() {
+  const whichString = Math.floor(Math.random() * 6) + 1;
+  const whichFret = Math.floor(Math.random() * 13);
+
+  const queue = [];
+  if (whichFret === 0) {
+    queue.push('flash-card-audio/name-the.mp3');
+    queue.push('flash-card-audio/open.mp3');
+    queue.push(`flash-card-audio/${whichString}.mp3`);
+    queue.push('flash-card-audio/string.mp3');
+  } else {
+    queue.push('flash-card-audio/on-the.mp3');
+    queue.push(`flash-card-audio/${whichString}.mp3`);
+    queue.push('flash-card-audio/string.mp3');
+    queue.push('flash-card-audio/name-the.mp3');
+    queue.push(`flash-card-audio/${whichFret}.mp3`);
+    queue.push('flash-card-audio/fret.mp3');
+  }
+
+  audioQueue(flashCardAudio, queue);
+  
   flashCardInstructions.innerHTML = 'Name the note on this fret:'
-  flashCardHint.innerHTML = `${getString()} string ${getFret()}`
+  flashCardHint.innerHTML = `${getString(whichString)} string ${whichFret}`
 }
-function getString() {
+function getString(which) {
   const strings = [
+    null,
     '1st',
     '2nd',
     '3rd',
     '4th',
     '5th',
     '6th',
-  ]
-  return strings[Math.floor(Math.random() * 6)]
+  ];
+  return strings[which];
 }
-function getNote() {
-  return allNotes[Math.floor(Math.random() * allNotes.length)]
-}
-function getFret() {
-  return Math.floor(Math.random() * 13)
+function getNote(which) {
+  return allNotes[which];
 }
 
 function audioQueue(audioQueueElement, files) {
+  if (!vocalizeFlashCards) return;
   var index = 1;
   if(!audioQueueElement || !audioQueueElement.tagName || audioQueueElement.tagName !== 'AUDIO') {
     throw 'Invalid container';
