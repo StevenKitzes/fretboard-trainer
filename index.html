@@ -10,6 +10,12 @@
       br {
         margin: 0 0 0.5em;
       }
+      h2 {
+        margin-bottom: 8px;
+      }
+      h4 {
+        margin: 8px inherit;
+      }
       input {
         text-align: center;
       }
@@ -17,9 +23,44 @@
         margin-bottom: 0.5em;
       }
 
+      #exercise-list {
+        margin: 0 auto;
+        text-align: left;
+        max-width: 750px;
+      }
+
+      #flash-card {
+        background-color: khaki;
+        border: 2px solid peru;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        margin: 8px auto;
+        max-width: 250px;
+        padding: 8px;
+      }
+
+      #flash-card-hint {
+        color: darkblue;
+        font-size: 32px;
+        font-weight: 800;
+      }
+
+      #flash-card-instructions {
+        color: brown;
+        font-weight: 600;
+      }
+
+      #flash-card-selector {
+        display: flex;
+        flex-direction: column;
+      }
+
       #metronome {
         background-color: aliceblue;
         box-shadow: 0 0.25em 1em 0 black;
+        /* hide the metronome since it doesn't really work right */
+        display: none;
         height: 8.75em;
         left: 0;
         position: fixed;
@@ -27,7 +68,8 @@
         width: 100%;
       }
       #title {
-        margin-top: 10em;
+        /* ignore this margin while metronome is hidden, see comments in #metronome */
+        /* margin-top: 10em; */
       }
       #ex1-input {
         width: 3em;
@@ -40,6 +82,9 @@
         font-size: .8em;
         margin: 0.5em 1em;
         padding: 0.25em 1em;
+      }
+      .radio {
+        margin-bottom: 4px;
       }
       .string-div {
         display: block;
@@ -69,32 +114,35 @@
     <hr>
     <h2>The following tools will help you practice the exercises in the video!</h2>
 
-    <h4>Exercises:</h4>
+    <div id="exercise-list">
+      <h4>Exercises:</h4>
 
-    <ol>
-    <li>
-      Practice, starting with the natural notes!
-    </li>
-    <li>
-      Repeat exercise 1, but use the metronome, starting at 40 BPM!
-    </li>
-    <li>
-      Add sharp and flat notes!
-    </li>
-    <li>
-      Get two random notes, play one up and one down!
-      <br>
-      <button id="ex4-get-two-random">Get 2 random notes</button>
-      With accidentals (sharps and flats)? <input type="checkbox" id="ex4-accidentals">
-    </li>
-    <li>
-      Play all 7 natural notes in a random order, alternating playing each note up and down!
-      <br>
-      <button id="ex5-get-seven-random">Get 7 random notes</button> <span id='ex5-notes'></span>
-    </li>
-    <li>
-      Repeat exercises 2 through 5, gradually increasing metronome speed until you can play at 80 BPM!
-    </li>
+      <ol>
+        <li>
+          Practice, starting with the natural notes!
+        </li>
+        <li>
+          Repeat exercise 1, but use the metronome, starting at 40 BPM!
+        </li>
+        <li>
+          Add sharp and flat notes!
+        </li>
+        <li>
+          Get two random notes, play one up and one down!
+          <br>
+          <button id="ex4-get-two-random">Get 2 random notes</button>
+          With accidentals (sharps and flats)? <input type="checkbox" id="ex4-accidentals">
+        </li>
+        <li>
+          Play all 7 natural notes in a random order, alternating playing each note up and down!
+          <br>
+          <button id="ex5-get-seven-random">Get 7 random notes</button> <span id='ex5-notes'></span>
+        </li>
+        <li>
+          Repeat exercises 2 through 5, gradually increasing metronome speed until you can play at 80 BPM!
+        </li>
+      </ol>
+    </div>
 
     <hr>
     Enter a note: <input id='ex1-input'>
@@ -117,6 +165,18 @@
     <div id="ex1-string3" class="string-div">------------------------------</div>
     <div id="ex1-string2" class="string-div">------------------------------</div>
     <div id="ex1-string1" class="string-div">------------------------------</div>
+
+    <hr>
+    <h2>Flash Cards</h2>
+    <div id="flash-card-selector">
+      <div><input id="find-note" class="radio" name="flash-cards" type="radio"><label for="find-note">Find note on string</label></div>
+      <div><input id="name-note" class="radio" name="flash-cards" type="radio"><label for="name-note">Name note from fret and string</label></div>
+      <div><input id="find-or-name" class="radio" name="flash-cards" type="radio"><label for="find-or-name">Randomly find or name</label></div>
+    </div>
+    <div id="flash-card">
+      <span id="flash-card-instructions">Follow instructions here</span>
+      <span id="flash-card-hint">4th string A#</span>
+    </div>
 
     <hr>
     <p>This afternoon web project shared with love by <a href="https://www.github.com/stevenkitzes">Steven Kitzes</a>.  Fill the world with music!!  v1.2.5</p>

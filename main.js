@@ -1,6 +1,7 @@
 const naturalNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const sharpNotes = ['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#'];
 const flatNotes = ['Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb'];
+const allNotes = [...naturalNotes, ...sharpNotes, ...flatNotes];
 
 const stringSpace = '-----';
 
@@ -45,6 +46,14 @@ const ex4GetTwoRandom = getEl('ex4-get-two-random');
 const ex4Accidentals = getEl('ex4-accidentals');
 
 const ex5GetSevenRandom = getEl('ex5-get-seven-random');
+
+const radioFind = getEl('find-note');
+const radioName = getEl('name-note');
+const radioRandom = getEl('find-or-name');
+const flashCardInstructions = getEl('flash-card-instructions');
+const flashCardHint = getEl('flash-card-hint');
+
+radioFind.checked = true;
 
 let metronomeOn = false;
 let interval = bpmToInterval(40);
@@ -269,6 +278,47 @@ setInterval(() => {
     }
   }
 }, 10);
+
+// do a flash card
+setInterval(() => {
+  if (radioFind.checked) {
+    flashCardFind();
+  } else if (radioName.checked) {
+    flashCardName();
+  } else {
+    if (Math.random() > 0.5) {
+      flashCardFind();
+    } else {
+      flashCardName();
+    }
+  }
+}, 5000)
+
+function flashCardFind() {
+  flashCardInstructions.innerHTML = 'Find this note on this string:'
+  flashCardHint.innerHTML = `${getString()} string ${getNote()}`
+}
+function flashCardName() {
+  flashCardInstructions.innerHTML = 'Name the note on this fret:'
+  flashCardHint.innerHTML = `${getString()} string ${getFret()}`
+}
+function getString() {
+  const strings = [
+    '1st',
+    '2nd',
+    '3rd',
+    '4th',
+    '5th',
+    '6th',
+  ]
+  return strings[Math.floor(Math.random() * 6)]
+}
+function getNote() {
+  return allNotes[Math.floor(Math.random() * allNotes.length)]
+}
+function getFret() {
+  return Math.floor(Math.random() * 13)
+}
 
 // Helper stolen direct from StackOverflow (thank you https://stackoverflow.com/questions/9038625/detect-if-device-is-ios)
 function deviceIsIos() {
