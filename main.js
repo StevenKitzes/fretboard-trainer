@@ -52,6 +52,7 @@ const radioName = getEl('name-note');
 const radioRandom = getEl('find-or-name');
 const flashCardInstructions = getEl('flash-card-instructions');
 const flashCardHint = getEl('flash-card-hint');
+const flashCardAudio = getEl('flash-card-audio');
 
 radioFind.checked = true;
 
@@ -60,7 +61,7 @@ let interval = bpmToInterval(40);
 let target = Date.now();
 
 let metronomeActivated = false;
-let audioElement = null;
+let metronomeAudioElement = null;
 
 const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
 
@@ -96,8 +97,8 @@ function enforceMetronomeRules () {
 }
 
 function startMetronome () {
-  audioElement.loop = false;
-  audioElement.play();
+  metronomeAudioElement.loop = false;
+  metronomeAudioElement.play();
   target = Date.now() + interval;
   metronomeOn = true;
 }
@@ -108,7 +109,7 @@ function stopMetronome () {
 function handleMetronomeStartStop () {
   if (!metronomeActivated) {
     metronomeActivated = true;
-    audioElement = new Audio('tick.mp3');
+    metronomeAudioElement = new Audio('tick.mp3');
   }
 
   if (metronomeOn) {
@@ -271,9 +272,9 @@ setInterval(() => {
   if (metronomeOn) {
     const now = Date.now();
     if (now >= target) {
-      audioElement.loop = false;
-      audioElement.currentTime = 0;
-      audioElement.play();
+      metronomeAudioElement.loop = false;
+      metronomeAudioElement.currentTime = 0;
+      metronomeAudioElement.play();
       target = now + interval;
     }
   }
@@ -319,6 +320,31 @@ function getNote() {
 function getFret() {
   return Math.floor(Math.random() * 13)
 }
+
+function audioQueue(audioQueueElement, files) {
+  var index = 1;
+  if(!audioQueueElement || !audioQueueElement.tagName || audioQueueElement.tagName !== 'AUDIO') {
+    throw 'Invalid container';
+  }
+  if(!files || !files.length) {
+    throw 'Invalid files array';
+  }
+
+  function playNext() {
+    if(index < files.length) {
+      audioQueueElement.src = files[index];
+      audioQueueElement.play();
+      index += 1;
+    } else {
+      audioQueueElement.removeEventListener('ended', playNext, false);
+    }
+  };
+
+  audioQueueElement.addEventListener('ended', playNext);
+
+  audioQueueElement.src = files[0];
+  audioQueueElement.play();
+};
 
 // Helper stolen direct from StackOverflow (thank you https://stackoverflow.com/questions/9038625/detect-if-device-is-ios)
 function deviceIsIos() {
