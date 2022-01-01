@@ -401,6 +401,7 @@ function audioQueue(audioQueueElement, files) {
     if(index < files.length) {
       audioQueueElement.src = files[index];
       audioQueueElement.play();
+      audioQueueElement.load();
       index += 1;
     } else {
       audioQueueElement.removeEventListener('ended', playNext, false);
