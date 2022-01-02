@@ -400,7 +400,6 @@ function audioQueue(audioQueueElement, files) {
   }
 
   function playNext() {
-    alert('ended');
     if(index < files.length) {
       alert('more to play');
       audioQueueElement.src = files[index];
