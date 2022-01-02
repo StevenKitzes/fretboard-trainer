@@ -309,6 +309,7 @@ function startFlashCardInterval() {
 startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
+  flashCardAudio.src = null;
   flashCardAudio.play();
   if (vocalizeFlashCards) {
     flashCardButton.innerHTML = 'Turn vocalization on';
@@ -399,6 +400,7 @@ function audioQueue(audioQueueElement, files) {
   }
 
   function playNext() {
+    alert('ended');
     if(index < files.length) {
       audioQueueElement.src = files[index];
       audioQueueElement.play();
