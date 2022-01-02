@@ -402,11 +402,13 @@ function audioQueue(audioQueueElement, files) {
   function playNext() {
     alert('ended');
     if(index < files.length) {
+      alert('more to play');
       audioQueueElement.src = files[index];
-      audioQueueElement.play();
       audioQueueElement.load();
+      audioQueueElement.play();
       index += 1;
     } else {
+      alert('no more to play');
       audioQueueElement.removeEventListener('ended', playNext, false);
     }
   };
