@@ -96,7 +96,7 @@ let metronomeActivated = false;
 let metronomeAudioElement = null;
 
 let vocalizeFlashCards = false;
-let flashCardDuration = 5000;
+let flashCardDuration = 10000;
 let flashCardInterval = null;
 
 const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
