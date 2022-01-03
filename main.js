@@ -431,6 +431,7 @@ function audioQueue(elementQueue) {
     if(index < elementQueue.length) {
       current.removeEventListener('ended', playNext, false);
       current = elementQueue[index];
+      current.currentTime = 0;
       current.play();
       index += 1;
       current.addEventListener('ended', playNext);
@@ -441,6 +442,7 @@ function audioQueue(elementQueue) {
 
   current = elementQueue[0];
   current.addEventListener('ended', playNext);
+  current.currentTime = 0;
   current.play();
 }
 
