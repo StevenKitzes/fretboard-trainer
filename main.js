@@ -342,7 +342,7 @@ function startFlashCardInterval() {
 startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
-  flashCardAudio.src = null;
+  flashCardAudio.src = 'tick.mp3';
   flashCardAudio.play();
   if (vocalizeFlashCards) {
     flashCardButton.innerHTML = 'Turn vocalization on';
