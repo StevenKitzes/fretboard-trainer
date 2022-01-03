@@ -85,9 +85,6 @@ const audioMap = {
   sharp: new Audio('flash-card-audio/sharp.mp3'),
   string: new Audio('flash-card-audio/string.mp3'),
 };
-Object.keys(audioMap).forEach(key => {
-  audioMap[key].load();
-});
 
 radioFind.checked = true;
 
@@ -342,10 +339,12 @@ function startFlashCardInterval() {
 startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
-  flashCardAudio.src = 'tick.mp3';
-  flashCardAudio.load();
-  flashCardAudio.play();
-  if (vocalizeFlashCards) {
+  Object.keys(audioMap).forEach(key => {
+    audioMap[key].load();
+    audioMap[key].play();
+    audioMap[key].pause();
+  });
+    if (vocalizeFlashCards) {
     flashCardButton.innerHTML = 'Turn vocalization on';
   } else {
     flashCardButton.innerHTML = 'Turn vocalization off';
