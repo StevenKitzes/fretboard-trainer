@@ -343,6 +343,7 @@ startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
   flashCardAudio.src = 'tick.mp3';
+  flashCardAudio.load();
   flashCardAudio.play();
   if (vocalizeFlashCards) {
     flashCardButton.innerHTML = 'Turn vocalization on';
