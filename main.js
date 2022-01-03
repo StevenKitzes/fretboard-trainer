@@ -56,6 +56,39 @@ const flashCardHint = getEl('flash-card-hint');
 const flashCardAudio = getEl('flash-card-audio');
 const flashCardDurationInput = getEl('flash-card-duration');
 
+const audioMap = {
+  1: new Audio('flash-card-audio/1.mp3'),
+  2: new Audio('flash-card-audio/2.mp3'),
+  3: new Audio('flash-card-audio/3.mp3'),
+  4: new Audio('flash-card-audio/4.mp3'),
+  5: new Audio('flash-card-audio/5.mp3'),
+  6: new Audio('flash-card-audio/6.mp3'),
+  7: new Audio('flash-card-audio/7.mp3'),
+  8: new Audio('flash-card-audio/8.mp3'),
+  9: new Audio('flash-card-audio/9.mp3'),
+  10: new Audio('flash-card-audio/10.mp3'),
+  11: new Audio('flash-card-audio/11.mp3'),
+  12: new Audio('flash-card-audio/12.mp3'),
+  a: new Audio('flash-card-audio/a.mp3'),
+  b: new Audio('flash-card-audio/b.mp3'),
+  c: new Audio('flash-card-audio/c.mp3'),
+  d: new Audio('flash-card-audio/d.mp3'),
+  e: new Audio('flash-card-audio/e.mp3'),
+  f: new Audio('flash-card-audio/f.mp3'),
+  g: new Audio('flash-card-audio/g.mp3'),
+  find: new Audio('flash-card-audio/find.mp3'),
+  flat: new Audio('flash-card-audio/flat.mp3'),
+  fret: new Audio('flash-card-audio/fret.mp3'),
+  nameThe: new Audio('flash-card-audio/name-the.mp3'),
+  onThe: new Audio('flash-card-audio/on-the.mp3'),
+  open: new Audio('flash-card-audio/open.mp3'),
+  sharp: new Audio('flash-card-audio/sharp.mp3'),
+  string: new Audio('flash-card-audio/string.mp3'),
+};
+Object.keys(audioMap).forEach(key => {
+  audioMap[key].load();
+});
+
 radioFind.checked = true;
 
 let metronomeOn = false;
@@ -335,16 +368,16 @@ function flashCardFind() {
   const noteString = getNote(whichNote);
 
   const queue = [];
-  queue.push('flash-card-audio/on-the.mp3');
-  queue.push(`flash-card-audio/${whichString}.mp3`);
-  queue.push('flash-card-audio/string.mp3');
-  queue.push('flash-card-audio/find.mp3');
-  queue.push(`flash-card-audio/${noteString.charAt(0).toLowerCase()}.mp3`);
+  queue.push(audioMap.onThe);
+  queue.push(audioMap[whichString]);
+  queue.push(audioMap.string);
+  queue.push(audioMap.find);
+  queue.push(audioMap[noteString.charAt(0).toLocaleLowerCase()]);
   if (noteString.length > 1) {
-    queue.push(noteString.charAt(1) === '#' ? 'flash-card-audio/sharp.mp3' : 'flash-card-audio/flat.mp3');
+    queue.push(noteString.charAt(1) === '#' ? audioMap.sharp : audioMap.flat);
   }
 
-  audioQueue(flashCardAudio, queue);
+  audioQueue(queue);
   
   flashCardInstructions.innerHTML = 'Find this note on this string:';
   flashCardHint.innerHTML = `${getString(whichString)} string ${noteString}`;
@@ -355,20 +388,20 @@ function flashCardName() {
 
   const queue = [];
   if (whichFret === 0) {
-    queue.push('flash-card-audio/name-the.mp3');
-    queue.push('flash-card-audio/open.mp3');
-    queue.push(`flash-card-audio/${whichString}.mp3`);
-    queue.push('flash-card-audio/string.mp3');
+    queue.push(audioMap.nameThe);
+    queue.push(audioMap.open);
+    queue.push(audioMap[whichString]);
+    queue.push(audioMap.string);
   } else {
-    queue.push('flash-card-audio/on-the.mp3');
-    queue.push(`flash-card-audio/${whichString}.mp3`);
-    queue.push('flash-card-audio/string.mp3');
-    queue.push('flash-card-audio/name-the.mp3');
-    queue.push(`flash-card-audio/${whichFret}.mp3`);
-    queue.push('flash-card-audio/fret.mp3');
+    queue.push(audioMap.onThe);
+    queue.push(audioMap[whichString]);
+    queue.push(audioMap.string);
+    queue.push(audioMap.nameThe);
+    queue.push(audioMap[whichFret]);
+    queue.push(audioMap.fret);
   }
 
-  audioQueue(flashCardAudio, queue);
+  audioQueue(queue);
   
   flashCardInstructions.innerHTML = 'Name the note on this fret:'
   flashCardHint.innerHTML = `${getString(whichString)} string ${whichFret}`
@@ -389,32 +422,27 @@ function getNote(which) {
   return allNotes[which];
 }
 
-function audioQueue(audioQueueElement, files) {
+function audioQueue(elementQueue) {
   if (!vocalizeFlashCards) return;
-  var index = 1;
-  if(!audioQueueElement || !audioQueueElement.tagName || audioQueueElement.tagName !== 'AUDIO') {
-    throw 'Invalid container';
-  }
-  if(!files || !files.length) {
-    throw 'Invalid files array';
-  }
-
+  let index = 1;
+  let current = null;
+  
   function playNext() {
-    if(index < files.length) {
-      audioQueueElement.src = files[index];
-      audioQueueElement.load();
-      audioQueueElement.play();
+    if(index < elementQueue.length) {
+      current.removeEventListener('ended', playNext, false);
+      current = elementQueue[index];
+      current.play();
       index += 1;
+      current.addEventListener('ended', playNext);
     } else {
-      audioQueueElement.removeEventListener('ended', playNext, false);
+      current.removeEventListener('ended', playNext, false);
     }
   };
 
-  audioQueueElement.addEventListener('ended', playNext);
-
-  audioQueueElement.src = files[0];
-  audioQueueElement.play();
-};
+  current = elementQueue[0];
+  current.addEventListener('ended', playNext);
+  current.play();
+}
 
 // Helper stolen direct from StackOverflow (thank you https://stackoverflow.com/questions/9038625/detect-if-device-is-ios)
 function deviceIsIos() {
