@@ -328,12 +328,7 @@ function startFlashCardInterval() {
 startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
-  Object.keys(audioMap).forEach(key => {
-    audioMap[key].load();
-    audioMap[key].play();
-    audioMap[key].pause();
-  });
-    if (vocalizeFlashCards) {
+  if (vocalizeFlashCards) {
     flashCardButton.innerHTML = 'Turn vocalization on';
   } else {
     flashCardButton.innerHTML = 'Turn vocalization off';
@@ -365,9 +360,7 @@ function flashCardFind() {
     output.push(noteString.charAt(1) === '#' ? '-sharp' : '-flat');
   }
 
-  utterance.text = output.join('');
-
-  voice.speak(utterance);
+  vocalize(output.join(''));
   
   flashCardInstructions.innerHTML = 'Find this note on this string:';
   flashCardHint.innerHTML = `${getString(whichString)} string ${noteString}`;
@@ -379,15 +372,19 @@ function flashCardName() {
 
   const output = [];
   if (whichFret === 0) {
-    utterance.text = `Name the open ${ordinalMap[whichString]} string.`;
-    voice.speak(utterance);
+    vocalize(`Name the open ${ordinalMap[whichString]} string.`);
   } else {
-    utterance.text = `On the ${ordinalMap[whichString]} string name the ${ordinalMap[whichFret]} fret.`;
-    voice.speak(utterance);
+    vocalize(`On the ${ordinalMap[whichString]} string name the ${ordinalMap[whichFret]} fret.`);
   }
   
   flashCardInstructions.innerHTML = 'Name the note on this fret:'
   flashCardHint.innerHTML = `${getString(whichString)} string ${whichFret}`
+}
+
+function vocalize(content) {
+  if (!vocalizeFlashCards) return;
+  utterance.text = content;
+  voice.speak(utterance);
 }
 
 function getString(which) {
