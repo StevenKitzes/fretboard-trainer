@@ -328,12 +328,13 @@ function startFlashCardInterval() {
 startFlashCardInterval();
 
 flashCardButton.addEventListener('click', () => {
-  if (vocalizeFlashCards) {
-    flashCardButton.innerHTML = 'Turn vocalization on';
-  } else {
-    flashCardButton.innerHTML = 'Turn vocalization off';
-  }
   vocalizeFlashCards = !vocalizeFlashCards;
+  if (vocalizeFlashCards) {
+    vocalize('Vocalize');
+    flashCardButton.innerHTML = 'Turn vocalization off';
+  } else {
+    flashCardButton.innerHTML = 'Turn vocalization on';
+  }
 });
 
 flashCardDurationInput.addEventListener('keyup', (event) => {
