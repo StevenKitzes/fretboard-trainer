@@ -71,6 +71,11 @@ const flashCardInstructions = getEl('flash-card-instructions');
 const flashCardHint = getEl('flash-card-hint');
 const flashCardAudio = getEl('flash-card-audio');
 const flashCardDurationInput = getEl('flash-card-duration');
+const stringAllCheckbox = getEl('string-all');
+const stringCheckboxes = document.querySelectorAll('.string-checkbox');
+const notesNaturalCheckbox = getEl('notes-natural');
+const notesSharpCheckbox = getEl('notes-sharp');
+const notesFlatCheckbox = getEl('notes-flat');
 
 const voice = window.speechSynthesis;
 const utterance = new SpeechSynthesisUtterance('hello, world');
@@ -347,10 +352,43 @@ flashCardDurationInput.addEventListener('keyup', (event) => {
   startFlashCardInterval();
 });
 
+// when "All" is checked, gray out and ignore the individual string checkboxes
+function syncStringCheckboxes() {
+  stringCheckboxes.forEach(checkbox => {
+    checkbox.disabled = stringAllCheckbox.checked;
+  });
+}
+stringAllCheckbox.addEventListener('change', syncStringCheckboxes);
+syncStringCheckboxes();
+
+// pick a random string from the ones selected, or from all six if "All" is
+// checked or nothing is selected
+function pickFlashCardString() {
+  const allStrings = [1, 2, 3, 4, 5, 6];
+  if (stringAllCheckbox.checked) {
+    return allStrings[randInt(allStrings.length)];
+  }
+  const selected = [...stringCheckboxes]
+    .filter(checkbox => checkbox.checked)
+    .map(checkbox => Number(checkbox.value));
+  const pool = selected.length > 0 ? selected : allStrings;
+  return pool[randInt(pool.length)];
+}
+
+// pick a random note from the selected note types (naturals, sharps, flats),
+// or from all of them if none are selected
+function pickFlashCardNote() {
+  let pool = [];
+  if (notesNaturalCheckbox.checked) pool.push(...naturalNotes);
+  if (notesSharpCheckbox.checked) pool.push(...sharpNotes);
+  if (notesFlatCheckbox.checked) pool.push(...flatNotes);
+  if (pool.length === 0) pool = allNotes;
+  return pool[randInt(pool.length)];
+}
+
 function flashCardFind() {
-  const whichString = Math.floor(Math.random() * 6) + 1;
-  const whichNote = Math.floor(Math.random() * allNotes.length);
-  const noteString = getNote(whichNote);
+  const whichString = pickFlashCardString();
+  const noteString = pickFlashCardNote();
 
   const output = [];
   output.push('On the ');
@@ -368,7 +406,7 @@ function flashCardFind() {
 }
 
 function flashCardName() {
-  const whichString = Math.floor(Math.random() * 6) + 1;
+  const whichString = pickFlashCardString();
   const whichFret = Math.floor(Math.random() * 13);
 
   const output = [];
@@ -399,10 +437,6 @@ function getString(which) {
     '6th',
   ];
   return strings[which];
-}
-
-function getNote(which) {
-  return allNotes[which];
 }
 
 // Helper stolen direct from StackOverflow (thank you https://stackoverflow.com/questions/9038625/detect-if-device-is-ios)

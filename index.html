@@ -64,6 +64,16 @@
         flex-direction: column;
       }
 
+      .flash-card-filter {
+        margin: 4px 0;
+      }
+      .flash-card-filter span {
+        white-space: nowrap;
+      }
+      .flash-card-filter input:disabled + label {
+        color: gray;
+      }
+
       #metronome {
         background-color: aliceblue;
         box-shadow: 0 0.25em 1em 0 black;
@@ -181,6 +191,22 @@
       <div><input id="find-note" class="radio" name="flash-cards" type="radio"><label for="find-note">Find note on string</label></div>
       <div><input id="name-note" class="radio" name="flash-cards" type="radio"><label for="name-note">Name note from fret and string</label></div>
       <div><input id="find-or-name" class="radio" name="flash-cards" type="radio"><label for="find-or-name">Randomly find or name</label></div>
+    </div>
+    <div id="flash-card-strings" class="flash-card-filter">
+      <span>Strings:&nbsp;</span>
+      <span><input id="string-all" type="checkbox" checked><label for="string-all">All</label></span>
+      <span><input id="string-1" class="string-checkbox" type="checkbox" value="1" checked disabled><label for="string-1">1 (high E)</label></span>
+      <span><input id="string-2" class="string-checkbox" type="checkbox" value="2" checked disabled><label for="string-2">2</label></span>
+      <span><input id="string-3" class="string-checkbox" type="checkbox" value="3" checked disabled><label for="string-3">3</label></span>
+      <span><input id="string-4" class="string-checkbox" type="checkbox" value="4" checked disabled><label for="string-4">4</label></span>
+      <span><input id="string-5" class="string-checkbox" type="checkbox" value="5" checked disabled><label for="string-5">5</label></span>
+      <span><input id="string-6" class="string-checkbox" type="checkbox" value="6" checked disabled><label for="string-6">6 (low E)</label></span>
+    </div>
+    <div id="flash-card-accidentals" class="flash-card-filter">
+      <span>Notes:&nbsp;</span>
+      <span><input id="notes-natural" type="checkbox" checked><label for="notes-natural">Naturals</label></span>
+      <span><input id="notes-sharp" type="checkbox" checked><label for="notes-sharp">Sharps</label></span>
+      <span><input id="notes-flat" type="checkbox" checked><label for="notes-flat">Flats</label></span>
     </div>
     <button id="flash-card-button">Turn vocalization on</button>
     <div id="flash-card-duration-controls">
