@@ -343,12 +343,43 @@ function restartFlashCardTimer() {
   flashCardTimerBar.style.animation = `flash-card-countdown ${flashCardDuration}ms linear`;
 }
 
+// While voice is on, play a near-silent tone to keep the audio output awake.
+// Otherwise the output (especially bluetooth headphones) goes idle between
+// cards and the start of each phrase gets cut off while it wakes back up.
+let keepAliveAudio = null;
+
+function startAudioKeepAlive() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+  if (keepAliveAudio === null) {
+    keepAliveAudio = new AudioContextClass();
+    const oscillator = keepAliveAudio.createOscillator();
+    const gain = keepAliveAudio.createGain();
+    // inaudible, but not zero so the output isn't treated as pure silence
+    gain.gain.value = 0.0001;
+    oscillator.connect(gain);
+    gain.connect(keepAliveAudio.destination);
+    oscillator.start();
+  }
+  keepAliveAudio.resume();
+}
+
+function stopAudioKeepAlive() {
+  if (keepAliveAudio !== null) {
+    keepAliveAudio.suspend();
+  }
+}
+
 flashCardButton.addEventListener('click', () => {
   vocalizeFlashCards = !vocalizeFlashCards;
   if (vocalizeFlashCards) {
-    vocalize('Vocalize');
+    // must start inside the click handler, since browsers (iOS especially)
+    // only allow audio to start from a user gesture
+    startAudioKeepAlive();
+    vocalize("3, 2, 1, let's go");
     flashCardButton.innerHTML = 'On';
   } else {
+    stopAudioKeepAlive();
     flashCardButton.innerHTML = 'Off';
   }
   flashCardButton.setAttribute('aria-pressed', vocalizeFlashCards);
