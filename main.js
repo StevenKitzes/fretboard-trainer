@@ -71,6 +71,7 @@ const flashCardInstructions = getEl('flash-card-instructions');
 const flashCardHint = getEl('flash-card-hint');
 const flashCardAudio = getEl('flash-card-audio');
 const flashCardDurationInput = getEl('flash-card-duration');
+const flashCardTimerBar = getEl('flash-card-timer-bar');
 const stringAllCheckbox = getEl('string-all');
 const stringCheckboxes = document.querySelectorAll('.string-checkbox');
 const notesNaturalCheckbox = getEl('notes-natural');
@@ -316,7 +317,9 @@ function startFlashCardInterval() {
     clearInterval(flashCardInterval);
     flashCardInterval = null;
   }
+  restartFlashCardTimer();
   flashCardInterval = setInterval(() => {
+    restartFlashCardTimer();
     if (radioFind.checked) {
       flashCardFind();
     } else if (radioName.checked) {
@@ -332,19 +335,29 @@ function startFlashCardInterval() {
 }
 startFlashCardInterval();
 
+// restart the countdown bar on the card so it empties over one card's duration
+function restartFlashCardTimer() {
+  flashCardTimerBar.style.animation = 'none';
+  // reading offsetWidth forces a reflow so the animation actually restarts
+  void flashCardTimerBar.offsetWidth;
+  flashCardTimerBar.style.animation = `flash-card-countdown ${flashCardDuration}ms linear`;
+}
+
 flashCardButton.addEventListener('click', () => {
   vocalizeFlashCards = !vocalizeFlashCards;
   if (vocalizeFlashCards) {
     vocalize('Vocalize');
-    flashCardButton.innerHTML = 'Turn vocalization off';
+    flashCardButton.innerHTML = 'On';
   } else {
-    flashCardButton.innerHTML = 'Turn vocalization on';
+    flashCardButton.innerHTML = 'Off';
   }
+  flashCardButton.setAttribute('aria-pressed', vocalizeFlashCards);
 });
 
-flashCardDurationInput.addEventListener('keyup', (event) => {
+flashCardDurationInput.addEventListener('input', (event) => {
   const newValue = Number(event.target.value);
-  if (newValue === 0 || newValue === NaN) {
+  // also catches NaN, since NaN > 0 is false
+  if (!(newValue > 0)) {
     flashCardDuration = 5000;
   } else {
     flashCardDuration = newValue * 1000;

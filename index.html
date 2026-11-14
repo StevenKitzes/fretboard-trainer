@@ -32,26 +32,22 @@
       #flash-card {
         background-color: khaki;
         border: 2px solid peru;
-        border-radius: 8px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         display: flex;
         flex-direction: column;
-        margin: 8px auto;
-        max-width: 250px;
-        padding: 8px;
-      }
-
-      #flash-card-button {
-        margin: 4px 0 8px;
-      }
-
-      #flash-card-duration {
-        width: 4em;
+        gap: 6px;
+        margin: 12px auto 20px;
+        max-width: 340px;
+        overflow: hidden;
+        padding: 20px 16px 0;
       }
 
       #flash-card-hint {
         color: darkblue;
-        font-size: 32px;
+        font-size: 40px;
         font-weight: 800;
+        margin-bottom: 14px;
       }
 
       #flash-card-instructions {
@@ -59,19 +55,122 @@
         font-weight: 600;
       }
 
-      #flash-card-selector {
-        display: flex;
-        flex-direction: column;
+      /* bar along the bottom of the card that empties as the card's time runs out */
+      #flash-card-timer {
+        background-color: rgba(139, 69, 19, 0.15);
+        height: 6px;
+        margin: 0 -16px;
+      }
+      #flash-card-timer-bar {
+        background-color: peru;
+        height: 100%;
+        transform-origin: left;
+      }
+      @keyframes flash-card-countdown {
+        from { transform: scaleX(1); }
+        to { transform: scaleX(0); }
       }
 
-      .flash-card-filter {
-        margin: 4px 0;
+      #flash-card-settings {
+        background-color: #f7f5f0;
+        border: 1px solid #ddd6c8;
+        border-radius: 12px;
+        margin: 0 auto;
+        max-width: 560px;
+        padding: 4px 16px;
+        text-align: left;
       }
-      .flash-card-filter span {
+
+      /* each setting is a row with its label on the left and its controls on the right */
+      .setting-row {
+        align-items: center;
+        border: none;
+        border-bottom: 1px solid #e6e0d4;
+        display: grid;
+        gap: 8px 16px;
+        grid-template-columns: 7.5em 1fr;
+        margin: 0;
+        padding: 12px 0;
+      }
+      .setting-row:last-child {
+        border-bottom: none;
+      }
+      .setting-row legend,
+      .setting-label {
+        color: #555;
+        font-size: 0.85em;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      /* legends don't take part in grid layout, so float them into the label column */
+      .setting-row legend {
+        float: left;
+        padding: 0;
+      }
+
+      .pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      /* radios and checkboxes are hidden and their labels act as toggle buttons */
+      .pill-input {
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+      }
+      .pill {
+        background-color: white;
+        border: 1px solid #c9bfae;
+        border-radius: 999px;
+        color: #333;
+        cursor: pointer;
+        display: inline-block;
+        font: inherit;
+        font-size: 0.9em;
+        padding: 6px 12px;
+        user-select: none;
         white-space: nowrap;
       }
-      .flash-card-filter input:disabled + label {
-        color: gray;
+      .pill:hover {
+        border-color: saddlebrown;
+      }
+      .pill-input:checked + .pill,
+      .pill[aria-pressed="true"] {
+        background-color: saddlebrown;
+        border-color: saddlebrown;
+        color: white;
+      }
+      .pill-input:focus-visible + .pill {
+        outline: 2px solid darkblue;
+        outline-offset: 2px;
+      }
+      .pill-input:disabled + .pill {
+        cursor: default;
+        opacity: 0.4;
+      }
+      .pill-input:disabled + .pill:hover {
+        border-color: #c9bfae;
+      }
+
+      #flash-card-duration {
+        border: 1px solid #c9bfae;
+        border-radius: 6px;
+        font: inherit;
+        padding: 6px;
+        width: 4em;
+      }
+
+      @media (max-width: 480px) {
+        .setting-row {
+          grid-template-columns: 1fr;
+        }
+        .setting-row legend {
+          float: none;
+          margin-bottom: 8px;
+        }
       }
 
       #metronome {
@@ -185,38 +284,63 @@
     <div id="ex1-string1" class="string-div">------------------------------</div>
 
     <hr>
-    <h2>Flash Cards</h2>
-    <audio id='flash-card-audio'></audio>
-    <div id="flash-card-selector">
-      <div><input id="find-note" class="radio" name="flash-cards" type="radio"><label for="find-note">Find note on string</label></div>
-      <div><input id="name-note" class="radio" name="flash-cards" type="radio"><label for="name-note">Name note from fret and string</label></div>
-      <div><input id="find-or-name" class="radio" name="flash-cards" type="radio"><label for="find-or-name">Randomly find or name</label></div>
-    </div>
-    <div id="flash-card-strings" class="flash-card-filter">
-      <span>Strings:&nbsp;</span>
-      <span><input id="string-all" type="checkbox" checked><label for="string-all">All</label></span>
-      <span><input id="string-1" class="string-checkbox" type="checkbox" value="1" checked disabled><label for="string-1">1 (high E)</label></span>
-      <span><input id="string-2" class="string-checkbox" type="checkbox" value="2" checked disabled><label for="string-2">2</label></span>
-      <span><input id="string-3" class="string-checkbox" type="checkbox" value="3" checked disabled><label for="string-3">3</label></span>
-      <span><input id="string-4" class="string-checkbox" type="checkbox" value="4" checked disabled><label for="string-4">4</label></span>
-      <span><input id="string-5" class="string-checkbox" type="checkbox" value="5" checked disabled><label for="string-5">5</label></span>
-      <span><input id="string-6" class="string-checkbox" type="checkbox" value="6" checked disabled><label for="string-6">6 (low E)</label></span>
-    </div>
-    <div id="flash-card-accidentals" class="flash-card-filter">
-      <span>Notes:&nbsp;</span>
-      <span><input id="notes-natural" type="checkbox" checked><label for="notes-natural">Naturals</label></span>
-      <span><input id="notes-sharp" type="checkbox" checked><label for="notes-sharp">Sharps</label></span>
-      <span><input id="notes-flat" type="checkbox" checked><label for="notes-flat">Flats</label></span>
-    </div>
-    <button id="flash-card-button">Turn vocalization on</button>
-    <div id="flash-card-duration-controls">
-      <label for="flash-card-duration">Flash card duration (seconds):&nbsp;</label>
-      <input id="flash-card-duration" type="text" autocomplete="off" value='10' />
-    </div>
-    <div id="flash-card">
-      <span id="flash-card-instructions">Follow instructions here</span>
-      <span id="flash-card-hint">Ready?</span>
-    </div>
+    <section id="flash-cards">
+      <h2>Flash Cards</h2>
+      <audio id='flash-card-audio'></audio>
+
+      <div id="flash-card" aria-live="polite">
+        <span id="flash-card-instructions">Your first card is coming up</span>
+        <span id="flash-card-hint">Ready?</span>
+        <div id="flash-card-timer" aria-hidden="true"><div id="flash-card-timer-bar"></div></div>
+      </div>
+
+      <div id="flash-card-settings">
+        <fieldset class="setting-row">
+          <legend>Mode</legend>
+          <div id="flash-card-selector" class="pill-group">
+            <span><input id="find-note" class="pill-input" name="flash-cards" type="radio"><label for="find-note" class="pill">Find the note</label></span>
+            <span><input id="name-note" class="pill-input" name="flash-cards" type="radio"><label for="name-note" class="pill">Name the fret</label></span>
+            <span><input id="find-or-name" class="pill-input" name="flash-cards" type="radio"><label for="find-or-name" class="pill">Mix both</label></span>
+          </div>
+        </fieldset>
+
+        <fieldset class="setting-row">
+          <legend>Strings</legend>
+          <div id="flash-card-strings" class="pill-group">
+            <span><input id="string-all" class="pill-input" type="checkbox" checked><label for="string-all" class="pill">All</label></span>
+            <span><input id="string-1" class="pill-input string-checkbox" type="checkbox" value="1" checked disabled><label for="string-1" class="pill">1 (high E)</label></span>
+            <span><input id="string-2" class="pill-input string-checkbox" type="checkbox" value="2" checked disabled><label for="string-2" class="pill">2</label></span>
+            <span><input id="string-3" class="pill-input string-checkbox" type="checkbox" value="3" checked disabled><label for="string-3" class="pill">3</label></span>
+            <span><input id="string-4" class="pill-input string-checkbox" type="checkbox" value="4" checked disabled><label for="string-4" class="pill">4</label></span>
+            <span><input id="string-5" class="pill-input string-checkbox" type="checkbox" value="5" checked disabled><label for="string-5" class="pill">5</label></span>
+            <span><input id="string-6" class="pill-input string-checkbox" type="checkbox" value="6" checked disabled><label for="string-6" class="pill">6 (low E)</label></span>
+          </div>
+        </fieldset>
+
+        <fieldset class="setting-row">
+          <legend>Notes</legend>
+          <div id="flash-card-accidentals" class="pill-group">
+            <span><input id="notes-natural" class="pill-input" type="checkbox" checked><label for="notes-natural" class="pill">Naturals</label></span>
+            <span><input id="notes-sharp" class="pill-input" type="checkbox" checked><label for="notes-sharp" class="pill">Sharps</label></span>
+            <span><input id="notes-flat" class="pill-input" type="checkbox" checked><label for="notes-flat" class="pill">Flats</label></span>
+          </div>
+        </fieldset>
+
+        <div class="setting-row">
+          <label for="flash-card-duration" class="setting-label">Seconds per card</label>
+          <div class="setting-controls">
+            <input id="flash-card-duration" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" value='10' />
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Voice</span>
+          <div class="setting-controls">
+            <button id="flash-card-button" class="pill" aria-pressed="false">Off</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <hr>
     <p>This afternoon web project shared with love by <a href="https://www.github.com/stevenkitzes">Steven Kitzes</a>.  Fill the world with music!!  v1.4.2</p>
