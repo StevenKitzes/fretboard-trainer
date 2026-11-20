@@ -385,8 +385,74 @@ flashCardButton.addEventListener('click', () => {
   flashCardButton.setAttribute('aria-pressed', vocalizeFlashCards);
 });
 
+// ---------- Keep screen awake (Screen Wake Lock API) ----------
+
+// The browser releases the lock whenever the page is hidden (tab switch, screen lock),
+// so we re-request it when the page becomes visible again while the toggle is on.
+const wakeButton = getEl('wake-lock');
+let wakeLockWanted = false;
+let wakeLock = null;
+
+if (!('wakeLock' in navigator)) {
+  wakeButton.disabled = true;
+  wakeButton.textContent = window.isSecureContext
+    ? 'Not supported in this browser'
+    : 'Needs HTTPS';
+} else {
+  wakeButton.addEventListener('click', async () => {
+    wakeLockWanted = !wakeLockWanted;
+    if (wakeLockWanted) await requestWakeLock();
+    else await releaseWakeLock();
+    updateWakeButton();
+  });
+  document.addEventListener('visibilitychange', async () => {
+    if (wakeLockWanted && document.visibilityState === 'visible') {
+      await requestWakeLock();
+      updateWakeButton();
+    }
+  });
+}
+
+async function requestWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null;
+      updateWakeButton();
+    });
+  } catch (err) {
+    console.log('wake lock request failed:', err);
+    wakeLock = null;
+    wakeLockWanted = false;
+  }
+}
+
+async function releaseWakeLock() {
+  if (wakeLock) await wakeLock.release();
+  wakeLock = null;
+}
+
+function updateWakeButton() {
+  // Show "On" while the user wants it on, even during the brief moments it's released by the browser.
+  wakeButton.setAttribute('aria-pressed', String(wakeLockWanted));
+  wakeButton.textContent = wakeLockWanted ? 'On' : 'Off';
+}
+
+// Only digits with at most one decimal point are allowed in the timer field.
+// Anything else (typed or pasted) is undone, keeping the cursor where it was.
+let lastValidDuration = flashCardDurationInput.value;
+
 flashCardDurationInput.addEventListener('input', (event) => {
-  const newValue = Number(event.target.value);
+  const input = event.target;
+  if (!/^\d*\.?\d*$/.test(input.value)) {
+    const cursor = input.selectionStart - (input.value.length - lastValidDuration.length);
+    input.value = lastValidDuration;
+    input.setSelectionRange(cursor, cursor);
+    return;
+  }
+  lastValidDuration = input.value;
+
+  const newValue = Number(input.value);
   // also catches NaN, since NaN > 0 is false
   if (!(newValue > 0)) {
     flashCardDuration = 5000;

@@ -92,6 +92,18 @@
         margin: 0;
         padding: 12px 0;
       }
+      /* a row holding several label + button pairs side by side; wraps on narrow screens */
+      .setting-row-split {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 32px;
+        justify-content: space-between;
+      }
+      .setting-pair {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+      }
       .setting-row:last-child {
         border-bottom: none;
       }
@@ -151,8 +163,14 @@
         cursor: default;
         opacity: 0.4;
       }
-      .pill-input:disabled + .pill:hover {
+      .pill-input:disabled + .pill:hover,
+      .pill:disabled:hover {
         border-color: #c9bfae;
+      }
+      .pill:disabled {
+        cursor: default;
+        opacity: 0.4;
+        white-space: normal;
       }
 
       #flash-card-duration {
@@ -295,6 +313,17 @@
       </div>
 
       <div id="flash-card-settings">
+        <div class="setting-row setting-row-split">
+          <div class="setting-pair">
+            <span class="setting-label">Keep screen awake</span>
+            <button type="button" id="wake-lock" class="pill" aria-pressed="false">Off</button>
+          </div>
+          <div class="setting-pair">
+            <span class="setting-label">Read cards aloud</span>
+            <button id="flash-card-button" class="pill" aria-pressed="false">Off</button>
+          </div>
+        </div>
+
         <fieldset class="setting-row">
           <legend>Mode</legend>
           <div id="flash-card-selector" class="pill-group">
@@ -321,29 +350,23 @@
           <legend>Notes</legend>
           <div id="flash-card-accidentals" class="pill-group">
             <span><input id="notes-natural" class="pill-input" type="checkbox" checked><label for="notes-natural" class="pill">Naturals</label></span>
-            <span><input id="notes-sharp" class="pill-input" type="checkbox" checked><label for="notes-sharp" class="pill">Sharps</label></span>
-            <span><input id="notes-flat" class="pill-input" type="checkbox" checked><label for="notes-flat" class="pill">Flats</label></span>
+            <span><input id="notes-sharp" class="pill-input" type="checkbox"><label for="notes-sharp" class="pill">Sharps</label></span>
+            <span><input id="notes-flat" class="pill-input" type="checkbox"><label for="notes-flat" class="pill">Flats</label></span>
           </div>
         </fieldset>
 
         <div class="setting-row">
-          <label for="flash-card-duration" class="setting-label">Seconds per card</label>
+          <label for="flash-card-duration" class="setting-label">Card timer</label>
           <div class="setting-controls">
-            <input id="flash-card-duration" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" value='10' />
-          </div>
-        </div>
-
-        <div class="setting-row">
-          <span class="setting-label">Voice</span>
-          <div class="setting-controls">
-            <button id="flash-card-button" class="pill" aria-pressed="false">Off</button>
+            <input id="flash-card-duration" type="text" inputmode="decimal" autocomplete="off" value='10' />
+            <span class="setting-label">Seconds</span>
           </div>
         </div>
       </div>
     </section>
 
     <hr>
-    <p>This afternoon web project shared with love by <a href="https://www.github.com/stevenkitzes">Steven Kitzes</a>.  Fill the world with music!!  v1.5.0</p>
+    <p>This afternoon web project shared with love by <a href="https://www.github.com/stevenkitzes">Steven Kitzes</a>.  Fill the world with music!!  v1.5.1</p>
 
     <script type="text/javascript" src="main.js"></script>
   </body>
